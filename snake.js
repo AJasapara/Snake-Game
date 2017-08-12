@@ -11,6 +11,8 @@ var size = 1;
 var gameOver = false;
 var foodX, foodY; // stores x and y coordinates of food
 newFood();
+var xDown = null;	// allows for touch support on mobile devices                                                    
+var yDown = null;
 drawSquare (arrayX[0],arrayY[0]);
 var run = setInterval(paintSnake,100); // starts moving snake automatically
 
@@ -22,23 +24,68 @@ function checkKey(e) {
     	run = setInterval(paintSnake,100);
     	gameOver = false;
     }
-    if (e.keyCode == '38') {
+    if (e.keyCode == '38') { // up arrow key
     	if (direction != 270 || size == 1)
 			direction = 90;
     }
-    else if (e.keyCode == '40') {
+    else if (e.keyCode == '40') { // down arrow key
     	if (direction != 90 || size == 1)
         	direction = 270;
     }
-    else if (e.keyCode == '37'){
+    else if (e.keyCode == '37'){ // left arrow key
     	if (direction != 0 || size == 1)
       		direction = 180;
     }
-    else if (e.keyCode == '39'){
+    else if (e.keyCode == '39'){ // right arrow key
     	if (direction != 180 || size == 1)
        		direction = 0;
     }
 }
+
+document.addEventListener('touchstart', handleTouchStart, false);        
+document.addEventListener('touchmove', handleTouchMove, false);                                                        
+
+function handleTouchStart(evt) {                                         
+    xDown = evt.touches[0].clientX;                                      
+    yDown = evt.touches[0].clientY;
+    if (gameOver) {
+    	run = setInterval(paintSnake,100);
+    	gameOver = false;
+    }                                      
+};  
+
+function handleTouchMove(evt) {
+    if (!xDown || !yDown) {
+        return;
+    }
+
+    var xUp = evt.touches[0].clientX;                                    
+    var yUp = evt.touches[0].clientY;
+
+    var xDiff = xDown - xUp;
+    var yDiff = yDown - yUp;
+
+    if (Math.abs(xDiff) > Math.abs(yDiff)) {
+        if (xDiff > 0) {
+            if (direction != 0 || size == 1) // left swipe
+      			direction = 180; 
+        } else {
+            if (direction != 180 || size == 1) // right swipe
+       			direction = 0;
+        }                       
+    } else {
+        if (yDiff > 0) {
+            if (direction != 270 || size == 1) // up swipe
+				direction = 90; 
+        } else { 
+            if (direction != 90 || size == 1) // down swipe
+        		direction = 270;
+        }                                                                 
+    }
+
+    xDown = null; // resets values
+    yDown = null;                                             
+};
 
 function paintSnake() { // draws and moves snake
 	if (direction == 0){
