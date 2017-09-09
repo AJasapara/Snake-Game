@@ -1,4 +1,4 @@
-// Hosted at https://www.arpitjasapara.com
+// Hosted at https://www.arpitjasapara.com/snake
 
 var canvas = document.getElementById("myCanvas");
 canvas.width = window.innerWidth*.9;
